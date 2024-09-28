@@ -1,3 +1,23 @@
+# FastNoise Lite
+
+[Web Preview App](https://auburn.github.io/FastNoiseLite)
+
+FastNoise Lite is an noise generation package with a large selection of noise algorithms.
+
+## Features
+
+- 2D & 3D sampling
+- OpenSimplex2 noise
+- OpenSimplex2S noise
+- Cellular (Voronoi) noise
+- Perlin noise
+- Value noise
+- Value Cubic noise
+- OpenSimplex2-based domain warp
+- Basic Grid Gradient domain warp
+- Multiple fractal options for all of the above
+- Supports floats and/or doubles
+
 ## Getting Started
 
 Here's an example for creating a 128x128 array of OpenSimplex2 noise
