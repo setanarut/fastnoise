@@ -2,7 +2,7 @@
 
 [Web Preview App](https://auburn.github.io/FastNoiseLite)
 
-FastNoise Lite is an noise generation package with a large selection of noise algorithms.
+FastNoise Lite is a noise generation package with a large selection of noise algorithms.
 
 ## Features
 
