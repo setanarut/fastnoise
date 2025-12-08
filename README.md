@@ -23,18 +23,26 @@ FastNoise Lite is a noise generation package with a large selection of noise alg
 Here's an example for creating a 128x128 array of OpenSimplex2 noise
 
 ```go
-// Create and configure noise state (either float32 or float64)
-var noise = fastnoise.New[float32]()
-noise.NoiseType(fastnoise.OpenSimplex2)
+package main
 
-// Gather noise data
-var noiseData [128][128]float32
+import (
+	"github.com/setanarut/fastnoise"
+)
 
-for x := 0; x < 128; x++ {
-	for y := 0; y < 128; y++ {
-		noiseData[x][y] = noise.Noise2D(x, y)
+func main() {
+
+	// Create and configure noise state (either float32 or float64)
+	var noise = fastnoise.New[float32]()
+	noise.NoiseType(fastnoise.OpenSimplex2)
+
+	var noiseData [128][128]float32
+
+	for x := range 128 {
+		for y := range 128 {
+			// Gather noise data
+			noiseData[x][y] = noise.Noise2D(x, y)
+		}
 	}
+	// Do something with noiseData...
 }
-
-// Do something with this data...
 ```

@@ -19,12 +19,13 @@ func main() {
 	img := image.NewGray(image.Rect(0, 0, 512, 512))
 
 	// Gather noise data
-	for x := 0; x < img.Bounds().Dx(); x++ {
-		for y := 0; y < img.Bounds().Dy(); y++ {
+	for x := range img.Bounds().Dx() {
+		for y := range img.Bounds().Dy() {
 			v := MapRange(noise.Noise2D(x, y), -1, 1, 0, 255)
 			img.SetGray(x, y, color.Gray{uint8(v)})
 		}
 	}
+
 	WritePNG("cellular.png", img)
 }
 

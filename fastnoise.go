@@ -2383,7 +2383,7 @@ func singleDomainWarpOpenSimplex2Gradient[T Float](seed int, warpAmp, frequency,
 
 	var vx, vy, vz T
 	a := (0.6 - x0*x0) - (y0*y0 + z0*z0)
-	for l := 0; l < 2; l++ {
+	for l := range 2 {
 		if a > 0 {
 			aaaa := (a * a) * (a * a)
 			var xo, yo, zo T
