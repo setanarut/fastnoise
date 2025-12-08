@@ -1,52 +1,4 @@
-// MIT License
-//
-// Copyright(c) 2023 Jordan Peck (jordan.me2@gmail.com)
-// Copyright(c) 2023 Contributors
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files(the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions :
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-//
-// .'',;:cldxkO00KKXXNNWWWNNXKOkxdollcc::::::;:::ccllloooolllllllllooollc:,'...        ...........',;cldxkO000Okxdlc::;;;,,;;;::cclllllll
-// ..',;:ldxO0KXXNNNNNNNNXXK0kxdolcc::::::;;;,,,,,,;;;;;;;;;;:::cclllllc:;'....       ...........',;:ldxO0KXXXK0Okxdolc::;;;;::cllodddddo
-// ...',:loxO0KXNNNNNXXKK0Okxdolc::;::::::::;;;,,'''''.....''',;:clllllc:;,'............''''''''',;:loxO0KXNNNNNXK0Okxdollccccllodxxxxxxd
-// ....';:ldkO0KXXXKK00Okxdolcc:;;;;;::cclllcc:;;,''..... ....',;clooddolcc:;;;;,,;;;;;::::;;;;;;:cloxk0KXNWWWWWWNXKK0Okxddoooddxxkkkkkxx
-// .....';:ldxkOOOOOkxxdolcc:;;;,,,;;:cllooooolcc:;'...      ..,:codxkkkxddooollloooooooollcc:::::clodkO0KXNWWWWWWNNXK00Okxxxxxxxxkkkkxxx
-// . ....';:cloddddo___________,,,,;;:clooddddoolc:,...      ..,:ldx__00OOOkkk___kkkkkkxxdollc::::cclodkO0KXXNNNNNNXXK0OOkxxxxxxxxxxxxddd
-// .......',;:cccc:|           |,,,;;:cclooddddoll:;'..     ..';cox|  \KKK000|   |KK00OOkxdocc___;::clldxxkO0KKKKK00Okkxdddddddddddddddoo
-// .......'',,,,,''|   ________|',,;;::cclloooooolc:;'......___:ldk|   \KK000|   |XKKK0Okxolc|   |;;::cclodxxkkkkxxdoolllcclllooodddooooo
-// ''......''''....|   |  ....'',,,,;;;::cclloooollc:;,''.'|   |oxk|    \OOO0|   |KKK00Oxdoll|___|;;;;;::ccllllllcc::;;,,;;;:cclloooooooo
-// ;;,''.......... |   |_____',,;;;____:___cllo________.___|   |___|     \xkk|   |KK_______ool___:::;________;;;_______...'',;;:ccclllloo
-// c:;,''......... |         |:::/     '   |lo/        |           |      \dx|   |0/       \d|   |cc/        |'/       \......',,;;:ccllo
-// ol:;,'..........|    _____|ll/    __    |o/   ______|____    ___|   |   \o|   |/   ___   \|   |o/   ______|/   ___   \ .......'',;:clo
-// dlc;,...........|   |::clooo|    /  |   |x\___   \KXKKK0|   |dol|   |\   \|   |   |   |   |   |d\___   \..|   |  /   /       ....',:cl
-// xoc;'...  .....'|   |llodddd|    \__|   |_____\   \KKK0O|   |lc:|   |'\       |   |___|   |   |_____\   \.|   |_/___/...      ...',;:c
-// dlc;'... ....',;|   |oddddddo\          |          |Okkx|   |::;|   |..\      |\         /|   |          | \         |...    ....',;:c
-// ol:,'.......',:c|___|xxxddollc\_____,___|_________/ddoll|___|,,,|___|...\_____|:\ ______/l|___|_________/...\________|'........',;::cc
-// c:;'.......';:codxxkkkkxxolc::;::clodxkOO0OOkkxdollc::;;,,''''',,,,''''''''''',,'''''',;:loxkkOOkxol:;,'''',,;:ccllcc:;,'''''',;::ccll
-// ;,'.......',:codxkOO0OOkxdlc:;,,;;:cldxxkkxxdolc:;;,,''.....'',;;:::;;,,,'''''........,;cldkO0KK0Okdoc::;;::cloodddoolc:;;;;;::ccllooo
-// .........',;:lodxOO0000Okdoc:,,',,;:clloddoolc:;,''.......'',;:clooollc:;;,,''.......',:ldkOKXNNXX0Oxdolllloddxxxxxxdolccccccllooodddd
-// .    .....';:cldxkO0000Okxol:;,''',,;::cccc:;,,'.......'',;:cldxxkkxxdolc:;;,'.......';coxOKXNWWWNXKOkxddddxxkkkkkkxdoollllooddxxxxkkk
-//       ....',;:codxkO000OOxdoc:;,''',,,;;;;,''.......',,;:clodkO00000Okxolc::;,,''..',;:ldxOKXNWWWNNK0OkkkkkkkkkkkxxddooooodxxkOOOOO000
-//       ....',;;clodxkkOOOkkdolc:;,,,,,,,,'..........,;:clodxkO0KKXKK0Okxdolcc::;;,,,;;:codkO0XXNNNNXKK0OOOOOkkkkxxdoollloodxkO0KKKXXXXX
-//
-// VERSION: 1.1.1
-// https://github.com/Auburn/FastNoiseLite
-
+// fastnoise is a 2D noise generation package with a large selection of noise algorithms.
 package fastnoise
 
 import (
@@ -206,38 +158,70 @@ type State[T Float] struct {
 // Constants
 
 var gradients2D = []float32{
-	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287, 0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
-	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051, 0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
-	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235, 0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
-	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287, -0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
-	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052, -0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
-	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235, -0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
-	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287, 0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
-	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051, 0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
-	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235, 0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
-	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287, -0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
-	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052, -0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
-	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235, -0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
-	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287, 0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
-	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051, 0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
-	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235, 0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
-	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287, -0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
-	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052, -0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
-	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235, -0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
-	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287, 0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
-	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051, 0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
-	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235, 0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
-	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287, -0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
-	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052, -0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
-	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235, -0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
-	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287, 0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
-	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051, 0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
-	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235, 0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
-	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287, -0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
-	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052, -0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
-	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235, -0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
-	0.38268343236509, 0.923879532511287, 0.923879532511287, 0.38268343236509, 0.923879532511287, -0.38268343236509, 0.38268343236509, -0.923879532511287,
-	-0.38268343236509, -0.923879532511287, -0.923879532511287, -0.38268343236509, -0.923879532511287, 0.38268343236509, -0.38268343236509, 0.923879532511287,
+	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287,
+	0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
+	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051,
+	0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
+	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235,
+	0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
+	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287,
+	-0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
+	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052,
+	-0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
+	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235,
+	-0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
+	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287,
+	0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
+	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051,
+	0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
+	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235,
+	0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
+	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287,
+	-0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
+	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052,
+	-0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
+	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235,
+	-0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
+	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287,
+	0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
+	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051,
+	0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
+	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235,
+	0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
+	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287,
+	-0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
+	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052,
+	-0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
+	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235,
+	-0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
+	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287,
+	0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
+	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051,
+	0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
+	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235,
+	0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
+	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287,
+	-0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
+	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052,
+	-0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
+	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235,
+	-0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
+	0.130526192220052, 0.99144486137381, 0.38268343236509, 0.923879532511287,
+	0.608761429008721, 0.793353340291235, 0.793353340291235, 0.608761429008721,
+	0.923879532511287, 0.38268343236509, 0.99144486137381, 0.130526192220051,
+	0.99144486137381, -0.130526192220051, 0.923879532511287, -0.38268343236509,
+	0.793353340291235, -0.60876142900872, 0.608761429008721, -0.793353340291235,
+	0.38268343236509, -0.923879532511287, 0.130526192220052, -0.99144486137381,
+	-0.130526192220052, -0.99144486137381, -0.38268343236509, -0.923879532511287,
+	-0.608761429008721, -0.793353340291235, -0.793353340291235, -0.608761429008721,
+	-0.923879532511287, -0.38268343236509, -0.99144486137381, -0.130526192220052,
+	-0.99144486137381, 0.130526192220051, -0.923879532511287, 0.38268343236509,
+	-0.793353340291235, 0.608761429008721, -0.608761429008721, 0.793353340291235,
+	-0.38268343236509, 0.923879532511287, -0.130526192220052, 0.99144486137381,
+	0.38268343236509, 0.923879532511287, 0.923879532511287, 0.38268343236509,
+	0.923879532511287, -0.38268343236509, 0.38268343236509, -0.923879532511287,
+	-0.38268343236509, -0.923879532511287, -0.923879532511287, -0.38268343236509,
+	-0.923879532511287, 0.38268343236509, -0.38268343236509, 0.923879532511287,
 }
 
 var randVecs2D = []float32{
@@ -1491,7 +1475,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 	y0 := yi + T(yNMask)
 	z0 := zi + T(zNMask)
 	a0 := 0.75 - x0*x0 - y0*y0 - z0*z0
-	value := (a0 * a0) * (a0 * a0) * gradCoord3D(seed, i+(xNMask&primeX), j+(yNMask&primeY), k+(zNMask&primeZ), x0, y0, z0)
+	value := (a0 * a0) * (a0 * a0) * gradCoord3D(
+		seed,
+		i+(xNMask&primeX),
+		j+(yNMask&primeY),
+		k+(zNMask&primeZ),
+		x0,
+		y0,
+		z0,
+	)
 
 	x1 := xi - 0.5
 	y1 := yi - 0.5
@@ -1512,7 +1504,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 		x2 := x0 - T(xNMask|1)
 		y2 := y0
 		z2 := z0
-		value += (a2 * a2) * (a2 * a2) * gradCoord3D(seed, i+(^xNMask&primeX), j+(yNMask&primeY), k+(zNMask&primeZ), x2, y2, z2)
+		value += (a2 * a2) * (a2 * a2) * gradCoord3D(
+			seed,
+			i+(^xNMask&primeX),
+			j+(yNMask&primeY),
+			k+(zNMask&primeZ),
+			x2,
+			y2,
+			z2,
+		)
 	} else {
 		a3 := yAFlipMask0 + zAFlipMask0 + a0
 		if a3 > 0 {
@@ -1538,7 +1538,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 		x6 := x0
 		y6 := y0 - T(yNMask|1)
 		z6 := z0
-		value += (a6 * a6) * (a6 * a6) * gradCoord3D(seed, i+(xNMask&primeX), j+(^yNMask&primeY), k+(zNMask&primeZ), x6, y6, z6)
+		value += (a6 * a6) * (a6 * a6) * gradCoord3D(
+			seed,
+			i+(xNMask&primeX),
+			j+(^yNMask&primeY),
+			k+(zNMask&primeZ),
+			x6,
+			y6,
+			z6,
+		)
 	} else {
 		a7 := T(xAFlipMask0+zAFlipMask0) + a0
 		if a7 > 0 {
@@ -1564,7 +1572,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 		xA := x0
 		yA := y0
 		zA := z0 - T(zNMask|1)
-		value += (aA * aA) * (aA * aA) * gradCoord3D(seed, i+(xNMask&primeX), j+(yNMask&primeY), k+(^zNMask&primeZ), xA, yA, zA)
+		value += (aA * aA) * (aA * aA) * gradCoord3D(
+			seed,
+			i+(xNMask&primeX),
+			j+(yNMask&primeY),
+			k+(^zNMask&primeZ),
+			xA,
+			yA,
+			zA,
+		)
 	} else {
 		aB := T(xAFlipMask0+yAFlipMask0) + a0
 		if aB > 0 {
@@ -1590,7 +1606,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 			x5 := x1
 			y5 := T(yNMask|1) + y1
 			z5 := T(zNMask|1) + z1
-			value += (a5 * a5) * (a5 * a5) * gradCoord3D(seed2, i+primeX, j+(yNMask&(primeY2)), k+(zNMask&(primeZ2)), x5, y5, z5)
+			value += (a5 * a5) * (a5 * a5) * gradCoord3D(
+				seed2,
+				i+primeX,
+				j+(yNMask&(primeY2)),
+				k+(zNMask&(primeZ2)),
+				x5,
+				y5,
+				z5,
+			)
 		}
 	}
 
@@ -1600,7 +1624,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 			x9 := T(xNMask|1) + x1
 			y9 := y1
 			z9 := T(zNMask|1) + z1
-			value += (a9 * a9) * (a9 * a9) * gradCoord3D(seed2, i+(xNMask&(primeX2)), j+primeY, k+(zNMask&(primeZ2)), x9, y9, z9)
+			value += (a9 * a9) * (a9 * a9) * gradCoord3D(
+				seed2,
+				i+(xNMask&(primeX2)),
+				j+primeY,
+				k+(zNMask&(primeZ2)),
+				x9,
+				y9,
+				z9,
+			)
 		}
 	}
 
@@ -1610,7 +1642,15 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 			xD := T(xNMask|1) + x1
 			yD := T(yNMask|1) + y1
 			zD := z1
-			value += (aD * aD) * (aD * aD) * gradCoord3D(seed2, i+(xNMask&(primeX2)), j+(yNMask&(primeY2)), k+primeZ, xD, yD, zD)
+			value += (aD * aD) * (aD * aD) * gradCoord3D(
+				seed2,
+				i+(xNMask&(primeX2)),
+				j+(yNMask&(primeY2)),
+				k+primeZ,
+				xD,
+				yD,
+				zD,
+			)
 		}
 	}
 
@@ -1707,7 +1747,8 @@ func singleCellular2D[T Float](state *State[T], seed int, x, y T) T {
 		}
 	}
 
-	if state.CellularDistanceFunc == CellularDistanceEuclidean && state.CellularReturnType >= CellularReturnDistance {
+	if state.CellularDistanceFunc == CellularDistanceEuclidean &&
+		state.CellularReturnType >= CellularReturnDistance {
 		dist0 = fastSqrt(dist0)
 		if state.CellularReturnType >= CellularReturnDistance2 {
 			dist1 = fastSqrt(dist1)
@@ -1842,7 +1883,8 @@ func singleCellular3D[T Float](state *State[T], seed int, x, y, z T) T {
 		}
 	}
 
-	if state.CellularDistanceFunc == CellularDistanceEuclidean && state.CellularReturnType >= CellularReturnDistance {
+	if state.CellularDistanceFunc == CellularDistanceEuclidean &&
+		state.CellularReturnType >= CellularReturnDistance {
 		dist0 = fastSqrt(dist0)
 		if state.CellularReturnType >= CellularReturnDistance2 {
 			dist1 = fastSqrt(dist1)
@@ -1917,10 +1959,26 @@ func singlePerlin3D[T Float](state *State[T], seed int, x, y, z T) T {
 	y1 := y0 + primeY
 	z1 := z0 + primeZ
 
-	xf00 := lerp(gradCoord3D(seed, x0, y0, z0, xd0, yd0, zd0), gradCoord3D(seed, x1, y0, z0, xd1, yd0, zd0), xs)
-	xf10 := lerp(gradCoord3D(seed, x0, y1, z0, xd0, yd1, zd0), gradCoord3D(seed, x1, y1, z0, xd1, yd1, zd0), xs)
-	xf01 := lerp(gradCoord3D(seed, x0, y0, z1, xd0, yd0, zd1), gradCoord3D(seed, x1, y0, z1, xd1, yd0, zd1), xs)
-	xf11 := lerp(gradCoord3D(seed, x0, y1, z1, xd0, yd1, zd1), gradCoord3D(seed, x1, y1, z1, xd1, yd1, zd1), xs)
+	xf00 := lerp(
+		gradCoord3D(seed, x0, y0, z0, xd0, yd0, zd0),
+		gradCoord3D(seed, x1, y0, z0, xd1, yd0, zd0),
+		xs,
+	)
+	xf10 := lerp(
+		gradCoord3D(seed, x0, y1, z0, xd0, yd1, zd0),
+		gradCoord3D(seed, x1, y1, z0, xd1, yd1, zd0),
+		xs,
+	)
+	xf01 := lerp(
+		gradCoord3D(seed, x0, y0, z1, xd0, yd0, zd1),
+		gradCoord3D(seed, x1, y0, z1, xd1, yd0, zd1),
+		xs,
+	)
+	xf11 := lerp(
+		gradCoord3D(seed, x0, y1, z1, xd0, yd1, zd1),
+		gradCoord3D(seed, x1, y1, z1, xd1, yd1, zd1),
+		xs,
+	)
 
 	yf0 := lerp(xf00, xf10, ys)
 	yf1 := lerp(xf01, xf11, ys)
@@ -1948,10 +2006,36 @@ func singleValueCubic2D[T Float](state *State[T], seed int, x, y T) T {
 	y3 := y1 + primeY2
 
 	return cubicLerp(
-		cubicLerp(valCoord2D[T](seed, x0, y0), valCoord2D[T](seed, x1, y0), valCoord2D[T](seed, x2, y0), valCoord2D[T](seed, x3, y0), xs),
-		cubicLerp(valCoord2D[T](seed, x0, y1), valCoord2D[T](seed, x1, y1), valCoord2D[T](seed, x2, y1), valCoord2D[T](seed, x3, y1), xs),
-		cubicLerp(valCoord2D[T](seed, x0, y2), valCoord2D[T](seed, x1, y2), valCoord2D[T](seed, x2, y2), valCoord2D[T](seed, x3, y2), xs),
-		cubicLerp(valCoord2D[T](seed, x0, y3), valCoord2D[T](seed, x1, y3), valCoord2D[T](seed, x2, y3), valCoord2D[T](seed, x3, y3), xs), ys) * (1 / (1.5 * 1.5))
+		cubicLerp(
+			valCoord2D[T](seed, x0, y0),
+			valCoord2D[T](seed, x1, y0),
+			valCoord2D[T](seed, x2, y0),
+			valCoord2D[T](seed, x3, y0),
+			xs,
+		),
+		cubicLerp(
+			valCoord2D[T](seed, x0, y1),
+			valCoord2D[T](seed, x1, y1),
+			valCoord2D[T](seed, x2, y1),
+			valCoord2D[T](seed, x3, y1),
+			xs,
+		),
+		cubicLerp(
+			valCoord2D[T](seed, x0, y2),
+			valCoord2D[T](seed, x1, y2),
+			valCoord2D[T](seed, x2, y2),
+			valCoord2D[T](seed, x3, y2),
+			xs,
+		),
+		cubicLerp(
+			valCoord2D[T](seed, x0, y3),
+			valCoord2D[T](seed, x1, y3),
+			valCoord2D[T](seed, x2, y3),
+			valCoord2D[T](seed, x3, y3),
+			xs,
+		),
+		ys,
+	) * (1 / (1.5 * 1.5))
 }
 
 func singleValueCubic3D[T Float](state *State[T], seed int, x, y, z T) T {
@@ -1979,29 +2063,129 @@ func singleValueCubic3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 	return cubicLerp(
 		cubicLerp(
-			cubicLerp(valCoord3D[T](seed, x0, y0, z0), valCoord3D[T](seed, x1, y0, z0), valCoord3D[T](seed, x2, y0, z0), valCoord3D[T](seed, x3, y0, z0), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y1, z0), valCoord3D[T](seed, x1, y1, z0), valCoord3D[T](seed, x2, y1, z0), valCoord3D[T](seed, x3, y1, z0), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y2, z0), valCoord3D[T](seed, x1, y2, z0), valCoord3D[T](seed, x2, y2, z0), valCoord3D[T](seed, x3, y2, z0), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y3, z0), valCoord3D[T](seed, x1, y3, z0), valCoord3D[T](seed, x2, y3, z0), valCoord3D[T](seed, x3, y3, z0), xs),
-			ys),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y0, z0),
+				valCoord3D[T](seed, x1, y0, z0),
+				valCoord3D[T](seed, x2, y0, z0),
+				valCoord3D[T](seed, x3, y0, z0),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y1, z0),
+				valCoord3D[T](seed, x1, y1, z0),
+				valCoord3D[T](seed, x2, y1, z0),
+				valCoord3D[T](seed, x3, y1, z0),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y2, z0),
+				valCoord3D[T](seed, x1, y2, z0),
+				valCoord3D[T](seed, x2, y2, z0),
+				valCoord3D[T](seed, x3, y2, z0),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y3, z0),
+				valCoord3D[T](seed, x1, y3, z0),
+				valCoord3D[T](seed, x2, y3, z0),
+				valCoord3D[T](seed, x3, y3, z0),
+				xs,
+			),
+			ys,
+		),
 		cubicLerp(
-			cubicLerp(valCoord3D[T](seed, x0, y0, z1), valCoord3D[T](seed, x1, y0, z1), valCoord3D[T](seed, x2, y0, z1), valCoord3D[T](seed, x3, y0, z1), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y1, z1), valCoord3D[T](seed, x1, y1, z1), valCoord3D[T](seed, x2, y1, z1), valCoord3D[T](seed, x3, y1, z1), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y2, z1), valCoord3D[T](seed, x1, y2, z1), valCoord3D[T](seed, x2, y2, z1), valCoord3D[T](seed, x3, y2, z1), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y3, z1), valCoord3D[T](seed, x1, y3, z1), valCoord3D[T](seed, x2, y3, z1), valCoord3D[T](seed, x3, y3, z1), xs),
-			ys),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y0, z1),
+				valCoord3D[T](seed, x1, y0, z1),
+				valCoord3D[T](seed, x2, y0, z1),
+				valCoord3D[T](seed, x3, y0, z1),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y1, z1),
+				valCoord3D[T](seed, x1, y1, z1),
+				valCoord3D[T](seed, x2, y1, z1),
+				valCoord3D[T](seed, x3, y1, z1),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y2, z1),
+				valCoord3D[T](seed, x1, y2, z1),
+				valCoord3D[T](seed, x2, y2, z1),
+				valCoord3D[T](seed, x3, y2, z1),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y3, z1),
+				valCoord3D[T](seed, x1, y3, z1),
+				valCoord3D[T](seed, x2, y3, z1),
+				valCoord3D[T](seed, x3, y3, z1),
+				xs,
+			),
+			ys,
+		),
 		cubicLerp(
-			cubicLerp(valCoord3D[T](seed, x0, y0, z2), valCoord3D[T](seed, x1, y0, z2), valCoord3D[T](seed, x2, y0, z2), valCoord3D[T](seed, x3, y0, z2), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y1, z2), valCoord3D[T](seed, x1, y1, z2), valCoord3D[T](seed, x2, y1, z2), valCoord3D[T](seed, x3, y1, z2), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y2, z2), valCoord3D[T](seed, x1, y2, z2), valCoord3D[T](seed, x2, y2, z2), valCoord3D[T](seed, x3, y2, z2), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y3, z2), valCoord3D[T](seed, x1, y3, z2), valCoord3D[T](seed, x2, y3, z2), valCoord3D[T](seed, x3, y3, z2), xs),
-			ys),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y0, z2),
+				valCoord3D[T](seed, x1, y0, z2),
+				valCoord3D[T](seed, x2, y0, z2),
+				valCoord3D[T](seed, x3, y0, z2),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y1, z2),
+				valCoord3D[T](seed, x1, y1, z2),
+				valCoord3D[T](seed, x2, y1, z2),
+				valCoord3D[T](seed, x3, y1, z2),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y2, z2),
+				valCoord3D[T](seed, x1, y2, z2),
+				valCoord3D[T](seed, x2, y2, z2),
+				valCoord3D[T](seed, x3, y2, z2),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y3, z2),
+				valCoord3D[T](seed, x1, y3, z2),
+				valCoord3D[T](seed, x2, y3, z2),
+				valCoord3D[T](seed, x3, y3, z2),
+				xs,
+			),
+			ys,
+		),
 		cubicLerp(
-			cubicLerp(valCoord3D[T](seed, x0, y0, z3), valCoord3D[T](seed, x1, y0, z3), valCoord3D[T](seed, x2, y0, z3), valCoord3D[T](seed, x3, y0, z3), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y1, z3), valCoord3D[T](seed, x1, y1, z3), valCoord3D[T](seed, x2, y1, z3), valCoord3D[T](seed, x3, y1, z3), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y2, z3), valCoord3D[T](seed, x1, y2, z3), valCoord3D[T](seed, x2, y2, z3), valCoord3D[T](seed, x3, y2, z3), xs),
-			cubicLerp(valCoord3D[T](seed, x0, y3, z3), valCoord3D[T](seed, x1, y3, z3), valCoord3D[T](seed, x2, y3, z3), valCoord3D[T](seed, x3, y3, z3), xs),
-			ys),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y0, z3),
+				valCoord3D[T](seed, x1, y0, z3),
+				valCoord3D[T](seed, x2, y0, z3),
+				valCoord3D[T](seed, x3, y0, z3),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y1, z3),
+				valCoord3D[T](seed, x1, y1, z3),
+				valCoord3D[T](seed, x2, y1, z3),
+				valCoord3D[T](seed, x3, y1, z3),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y2, z3),
+				valCoord3D[T](seed, x1, y2, z3),
+				valCoord3D[T](seed, x2, y2, z3),
+				valCoord3D[T](seed, x3, y2, z3),
+				xs,
+			),
+			cubicLerp(
+				valCoord3D[T](seed, x0, y3, z3),
+				valCoord3D[T](seed, x1, y3, z3),
+				valCoord3D[T](seed, x2, y3, z3),
+				valCoord3D[T](seed, x3, y3, z3),
+				xs,
+			),
+			ys,
+		),
 		zs) * (1 / (1.5 * 1.5 * 1.5))
 }
 
@@ -2068,9 +2252,31 @@ func doSingleDomainWarp2D[T Float](state *State[T], seed int, amp, freq, x, y T,
 func doSingleDomainWarp3D[T Float](state *State[T], seed int, amp, freq, x, y, z T, xp, yp, zp *T) {
 	switch state.DomainWarpType {
 	case DomainWarpOpenSimplex2:
-		singleDomainWarpOpenSimplex2Gradient(seed, amp*32.69428253173828125, freq, x, y, z, xp, yp, zp, false)
+		singleDomainWarpOpenSimplex2Gradient(
+			seed,
+			amp*32.69428253173828125,
+			freq,
+			x,
+			y,
+			z,
+			xp,
+			yp,
+			zp,
+			false,
+		)
 	case DomainWarpOpenSimplex2Reduced:
-		singleDomainWarpOpenSimplex2Gradient(seed, amp*7.71604938271605, freq, x, y, z, xp, yp, zp, true)
+		singleDomainWarpOpenSimplex2Gradient(
+			seed,
+			amp*7.71604938271605,
+			freq,
+			x,
+			y,
+			z,
+			xp,
+			yp,
+			zp,
+			true,
+		)
 	case DomainWarpBasicGrid:
 		singleDomainWarpBasicGrid3D(seed, amp, freq, x, y, z, xp, yp, zp)
 	}
@@ -2273,7 +2479,12 @@ func singleDomainWarpBasicGrid3D[T Float](seed int, warpAmp, frequency, x, y, z 
 
 // Domain Warp Simplex/OpenSimplex2
 
-func singleDomainWarpSimplexGradient[T Float](seed int, warpAmp, frequency, x, y T, xr, yr *T, outGradOnly bool) {
+func singleDomainWarpSimplexGradient[T Float](
+	seed int,
+	warpAmp, frequency, x, y T,
+	xr, yr *T,
+	outGradOnly bool,
+) {
 	const SQRT3 float64 = 1.7320508075688772935274463415059
 	const G2 float64 = (3 - SQRT3) / 6
 
@@ -2357,7 +2568,12 @@ func singleDomainWarpSimplexGradient[T Float](seed int, warpAmp, frequency, x, y
 	*yr += vy * warpAmp
 }
 
-func singleDomainWarpOpenSimplex2Gradient[T Float](seed int, warpAmp, frequency, x, y, z T, xr, yr, zr *T, outGradOnly bool) {
+func singleDomainWarpOpenSimplex2Gradient[T Float](
+	seed int,
+	warpAmp, frequency, x, y, z T,
+	xr, yr, zr *T,
+	outGradOnly bool,
+) {
 	x *= frequency
 	y *= frequency
 	z *= frequency
