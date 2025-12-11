@@ -1,4 +1,4 @@
-// fastnoise is a 2D noise generation package with a large selection of noise algorithms.
+// fastnoise is a noise generation package with a large selection of noise algorithms.
 package fastnoise
 
 import (
