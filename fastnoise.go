@@ -5,6 +5,11 @@ import (
 	"math"
 )
 
+// Coord represents a noise Coord number type.
+type Coord interface {
+	Float | int
+}
+
 // Float represents a floating-point number type.
 type Float interface {
 	float32 | float64
@@ -76,25 +81,25 @@ const (
 
 type (
 	// noise2DFunc is a prototype for a function that generates 2D noise.
-	noise2DFunc[T Float] func(state *State[T], seed int, x, y T) T
+	noise2DFunc[T Float] func(state *NoiseState[T], seed int, x, y T) T
 	// noise3DFunc is a prototype for a function that generates 3D noise.
-	noise3DFunc[T Float] func(state *State[T], seed int, x, y, z T) T
+	noise3DFunc[T Float] func(state *NoiseState[T], seed int, x, y, z T) T
 )
 
-// State contains the configuration for generating a noise. This should only be created
-// with NewState, as it will initialize with sane defaults, including any private members.
+// NoiseState contains the configuration for generating a noise. This should only be created
+// with NewNoiseState, as it will initialize with sane defaults, including any private members.
 //
 // May be used to generate either float32 or float64 values.
-type State[T Float] struct {
-	// Seed for all noise types.
+type NoiseState[T Float] struct {
+	// Seed for noise.
 	//
 	// Default: 1337
 	Seed int
-	// Frequency for all noise types.
+	// Noise frequency.
 	//
 	// Default: 0.01
 	Frequency T
-	// noiseType specifies the algorithm that will be used with GetNoise2D and GetNoise3D.
+	// noiseType specifies the algorithm that will be used with Value2D and Value3D.
 	//
 	// Default: OpenSimplex2
 	noiseType NoiseType
@@ -111,11 +116,11 @@ type State[T Float] struct {
 	//
 	// Default: 3
 	Octaves int
-	// Lacunarity is the octave Lacunarity for all fractal noise types.
+	// Lacunarity is the octave Lacunarity.
 	//
 	// Default: 2.0
 	Lacunarity T
-	// Gain is the octave gain for all fractal noise types.
+	// Gain is the octave gain.
 	//
 	// Default: 0.5
 	Gain T
@@ -637,10 +642,10 @@ var randVecs3D = []float32{
 // Public API
 // ====================
 
-// New initializes a new noise generator state with default values. This function must be used
+// NewNoiseState initializes a new noise generator state with default values. This function must be used
 // to create new states.
-func New[T Float]() *State[T] {
-	state := &State[T]{
+func NewNoiseState[T Float]() *NoiseState[T] {
+	state := &NoiseState[T]{
 		Seed:                 1337,
 		Frequency:            0.01,
 		noiseType:            OpenSimplex2,
@@ -662,8 +667,8 @@ func New[T Float]() *State[T] {
 }
 
 // apply determines the function to use for generating noise, and caches it to reduce overhead
-// each time it GetNoise2D or GetNoise3D is invoked.
-func (state *State[T]) apply() {
+// each time it Value2D or Value3D is invoked.
+func (state *NoiseState[T]) apply() {
 	switch state.fractalType {
 	case FractalFBm:
 		state.noise2D = genFractalFBM2D[T]
@@ -695,94 +700,78 @@ func (state *State[T]) apply() {
 			state.noise2D = singleValue2D[T]
 			state.noise3D = singleValue3D[T]
 		default:
-			state.noise2D = func(_ *State[T], _ int, _, _ T) T { return 0 }
-			state.noise3D = func(_ *State[T], _ int, _, _, _ T) T { return 0 }
+			state.noise2D = func(_ *NoiseState[T], _ int, _, _ T) T { return 0 }
+			state.noise3D = func(_ *NoiseState[T], _ int, _, _, _ T) T { return 0 }
 		}
 	}
 }
 
-// SetNoiseType specifies the algorithm that will be used with GetNoise2D and GetNoise3D.
+// SetNoiseType specifies the noise algorithm.
 //
 // Default: OpenSimplex2
-func (state *State[T]) SetNoiseType(nt NoiseType) {
+func (state *NoiseState[T]) SetNoiseType(nt NoiseType) {
 	state.noiseType = nt
 	state.apply()
 }
 
-// FractalType specifies the method used for combining octaves for all fractal noise types.
+// SetFractalType specifies the method used for combining octaves for all fractal noise types.
 // Only effects DomainWarp2D and DomainWarp3D functions.
 //
 // Default: FractalNone
-func (state *State[T]) FractalType(ft FractalType) {
+func (state *NoiseState[T]) SetFractalType(ft FractalType) {
 	state.fractalType = ft
 	state.apply()
 }
 
-// Noise2D calculates the noise value at the specified 2D position using the current state
+// Value2D returns the noise value at the specified 2D position using the current *NoiseState
 // settings.
 //
-// This is a convenience function for GetNoise2D that accepts integral coordinates.
+// The x and y parameters can be float32, float64, or int. Both coordinates must be the same type.
+//
 // Return values are always normalized and in the range of -1.0 and 1.0.
-func (state *State[T]) Noise2D(x, y int) T {
-	fx, fy := state.transformNoiseCoordinate2D(T(x), T(y))
-	return state.noise2D(state, state.Seed, fx, fy)
+func Value2D[T Float, N Coord](x, y N, ns *NoiseState[T]) T {
+	fx, fy := ns.transformNoiseCoordinate2D(T(x), T(y))
+	return ns.noise2D(ns, ns.Seed, fx, fy)
 }
 
-// GetNoise2D calculates the noise value at the specified 2D position using the current state
+// Value3D returns the noise value at the specified 3D position using the current NoiseState
 // settings.
 //
-// Return values are always normalized and in the range of -1.0 and 1.0.
-func (state *State[T]) GetNoise2D(x, y T) T {
-	x, y = state.transformNoiseCoordinate2D(x, y)
-	return state.noise2D(state, state.Seed, x, y)
-}
-
-// Noise3D calculates the noise value at the specified 3D position using the current state
-// settings.
+// The x, y, and z parameters can be float32, float64, or int. All coordinates must be the same type.
 //
-// This is a convenience function for GetNoise3D that accepts integral coordinates.
-// Return values are always normalized and in the range of -1.0 and 1.0.
-func (state *State[T]) Noise3D(x, y, z int) T {
-	fx, fy, fz := state.transformNoiseCoordinate3D(T(x), T(y), T(z))
-	return state.noise3D(state, state.Seed, fx, fy, fz)
-}
-
-// GetNoise3D calculates the noise value at the specified 3D position using the current state
-// settings.
-//
-// Return values are always normalized and in the range of -1.0 and 1.0.
-func (state *State[T]) GetNoise3D(x, y, z T) T {
-	x, y, z = state.transformNoiseCoordinate3D(x, y, z)
-	return state.noise3D(state, state.Seed, x, y, z)
+// Returns a noise value normalized in the range of -1.0 and 1.0.
+func Value3D[T Float, N Coord](x, y, z N, ns *NoiseState[T]) T {
+	fx, fy, fz := ns.transformNoiseCoordinate3D(T(x), T(y), T(z))
+	return ns.noise3D(ns, ns.Seed, fx, fy, fz)
 }
 
 // DomainWarp2D warps the input position using current domain warp settings.
-func (state *State[T]) DomainWarp2D(x, y T) (T, T) {
-	xx := x
-	yy := y
-	switch state.fractalType {
+func DomainWarp2D[T Float, N Coord](x, y N, ns *NoiseState[T]) (T, T) {
+	xx := T(x)
+	yy := T(y)
+	switch ns.fractalType {
 	default:
-		domainWarpSingle2D(state, &xx, &yy)
+		domainWarpSingle2D(ns, &xx, &yy)
 	case FractalDomainWarpProgressive:
-		domainWarpFractalProgressive2D(state, &xx, &yy)
+		domainWarpFractalProgressive2D(ns, &xx, &yy)
 	case FractalDomainWarpIndependent:
-		domainWarpFractalIndependent2D(state, &xx, &yy)
+		domainWarpFractalIndependent2D(ns, &xx, &yy)
 	}
 	return xx, yy
 }
 
-// DomainWarp2D warps the input position using current domain warp settings.
-func (state *State[T]) DomainWarp3D(x, y, z T) (T, T, T) {
-	xx := x
-	yy := y
-	zz := z
-	switch state.fractalType {
+// DomainWarp3D warps the input position using current domain warp settings.
+func DomainWarp3D[T Float, N Coord](x, y, z N, ns *NoiseState[T]) (T, T, T) {
+	xx := T(x)
+	yy := T(y)
+	zz := T(z)
+	switch ns.fractalType {
 	default:
-		domainWarpSingle3D(state, &xx, &yy, &zz)
+		domainWarpSingle3D(ns, &xx, &yy, &zz)
 	case FractalDomainWarpProgressive:
-		domainWarpFractalProgressive3D(state, &xx, &yy, &zz)
+		domainWarpFractalProgressive3D(ns, &xx, &yy, &zz)
 	case FractalDomainWarpIndependent:
-		domainWarpFractalIndependent3D(state, &xx, &yy, &zz)
+		domainWarpFractalIndependent3D(ns, &xx, &yy, &zz)
 	}
 	return xx, yy, zz
 }
@@ -792,20 +781,6 @@ func (state *State[T]) DomainWarp3D(x, y, z T) (T, T, T) {
 // ====================
 
 // Utilities
-
-func fastMin[T Float](x, y T) T {
-	if x < y {
-		return x
-	}
-	return y
-}
-
-func fastMax[T Float](x, y T) T {
-	if x > y {
-		return x
-	}
-	return y
-}
 
 func fastAbs[T Float](f T) T {
 	if f < 0 {
@@ -859,7 +834,7 @@ func pingPong[T Float](t T) T {
 	return 2 - t
 }
 
-func calculateFractalBounding[T Float](state *State[T]) T {
+func calculateFractalBounding[T Float](state *NoiseState[T]) T {
 	gain := fastAbs(state.Gain)
 	amp := gain
 	var ampFractal T = 1.0
@@ -968,7 +943,7 @@ func gradCoordDual3D[T Float](seed, xPrimed, yPrimed, zPrimed int, xd, yd, zd T,
 	*zo = value * zgo
 }
 
-func genNoiseSingle2D[T Float](state *State[T], seed int, x, y T) T {
+func genNoiseSingle2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	switch state.noiseType {
 	case OpenSimplex2:
 		return singleSimplex2D(state, seed, x, y)
@@ -987,7 +962,7 @@ func genNoiseSingle2D[T Float](state *State[T], seed int, x, y T) T {
 	}
 }
 
-func genNoiseSingle3D[T Float](state *State[T], seed int, x, y, z T) T {
+func genNoiseSingle3D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	switch state.noiseType {
 	case OpenSimplex2:
 		return singleOpenSimplex23D(state, seed, x, y, z)
@@ -1008,7 +983,7 @@ func genNoiseSingle3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // Noise Coordinate Transforms (frequency, and possible skew or rotation)
 
-func (state *State[T]) transformNoiseCoordinate2D(x, y T) (T, T) {
+func (state *NoiseState[T]) transformNoiseCoordinate2D(x, y T) (T, T) {
 	tx := x * state.Frequency
 	ty := y * state.Frequency
 
@@ -1023,7 +998,7 @@ func (state *State[T]) transformNoiseCoordinate2D(x, y T) (T, T) {
 	return tx, ty
 }
 
-func (state *State[T]) transformNoiseCoordinate3D(x, y, z T) (T, T, T) {
+func (state *NoiseState[T]) transformNoiseCoordinate3D(x, y, z T) (T, T, T) {
 	tx := x * state.Frequency
 	ty := y * state.Frequency
 	tz := z * state.Frequency
@@ -1058,7 +1033,7 @@ func (state *State[T]) transformNoiseCoordinate3D(x, y, z T) (T, T, T) {
 
 // Domain Warp Coordinate Transforms
 
-func transformDomainWarpCoordinate2D[T Float](state *State[T], x, y *T) {
+func transformDomainWarpCoordinate2D[T Float](state *NoiseState[T], x, y *T) {
 	switch state.DomainWarpType {
 	case DomainWarpOpenSimplex2, DomainWarpOpenSimplex2Reduced:
 		const SQRT3 float64 = 1.7320508075688772935274463415059
@@ -1069,7 +1044,7 @@ func transformDomainWarpCoordinate2D[T Float](state *State[T], x, y *T) {
 	}
 }
 
-func transformDomainWarpCoordinate3D[T Float](state *State[T], x, y, z *T) {
+func transformDomainWarpCoordinate3D[T Float](state *NoiseState[T], x, y, z *T) {
 	switch state.RotationType3D {
 	case RotationImproveXYPlanes:
 		xy := *x + *y
@@ -1098,14 +1073,14 @@ func transformDomainWarpCoordinate3D[T Float](state *State[T], x, y, z *T) {
 }
 
 // Fractal FBm
-func genFractalFBM2D[T Float](state *State[T], seed int, x, y T) (sum T) {
+func genFractalFBM2D[T Float](state *NoiseState[T], seed int, x, y T) (sum T) {
 	amp := calculateFractalBounding(state)
 
 	for i := 0; i < state.Octaves; i++ {
 		noise := genNoiseSingle2D(state, seed, x, y)
 		seed++
 		sum += noise * amp
-		amp *= lerp(1.0, fastMin(noise+1, 2)*0.5, state.WeightedStrength)
+		amp *= lerp(1.0, min(noise+1, 2)*0.5, state.WeightedStrength)
 
 		x *= state.Lacunarity
 		y *= state.Lacunarity
@@ -1115,7 +1090,7 @@ func genFractalFBM2D[T Float](state *State[T], seed int, x, y T) (sum T) {
 	return
 }
 
-func genFractalFBM3D[T Float](state *State[T], seed int, x, y, z T) (sum T) {
+func genFractalFBM3D[T Float](state *NoiseState[T], seed int, x, y, z T) (sum T) {
 	amp := calculateFractalBounding(state)
 
 	for i := 0; i < state.Octaves; i++ {
@@ -1135,7 +1110,7 @@ func genFractalFBM3D[T Float](state *State[T], seed int, x, y, z T) (sum T) {
 
 // Fractal Ridged
 
-func genFractalRidged2D[T Float](state *State[T], seed int, x, y T) (sum T) {
+func genFractalRidged2D[T Float](state *NoiseState[T], seed int, x, y T) (sum T) {
 	amp := calculateFractalBounding(state)
 
 	for i := 0; i < state.Octaves; i++ {
@@ -1152,7 +1127,7 @@ func genFractalRidged2D[T Float](state *State[T], seed int, x, y T) (sum T) {
 	return
 }
 
-func genFractalRidged3D[T Float](state *State[T], seed int, x, y, z T) (sum T) {
+func genFractalRidged3D[T Float](state *NoiseState[T], seed int, x, y, z T) (sum T) {
 	amp := calculateFractalBounding(state)
 
 	for i := 0; i < state.Octaves; i++ {
@@ -1172,7 +1147,7 @@ func genFractalRidged3D[T Float](state *State[T], seed int, x, y, z T) (sum T) {
 
 // Fractal PingPong
 
-func genFractalPingPong2D[T Float](state *State[T], seed int, x, y T) (sum T) {
+func genFractalPingPong2D[T Float](state *NoiseState[T], seed int, x, y T) (sum T) {
 	amp := calculateFractalBounding(state)
 
 	for i := 0; i < state.Octaves; i++ {
@@ -1189,7 +1164,7 @@ func genFractalPingPong2D[T Float](state *State[T], seed int, x, y T) (sum T) {
 	return
 }
 
-func genFractalPingPong3D[T Float](state *State[T], seed int, x, y, z T) (sum T) {
+func genFractalPingPong3D[T Float](state *NoiseState[T], seed int, x, y, z T) (sum T) {
 	amp := calculateFractalBounding(state)
 
 	for i := 0; i < state.Octaves; i++ {
@@ -1209,7 +1184,7 @@ func genFractalPingPong3D[T Float](state *State[T], seed int, x, y, z T) (sum T)
 
 // Simplex/OpenSimplex2 Noise
 
-func singleSimplex2D[T Float](state *State[T], seed int, x, y T) T {
+func singleSimplex2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	// 2D OpenSimplex2 case uses the same algorithm as ordinary Simplex.
 
 	const SQRT3 float64 = 1.7320508075688772935274463415059
@@ -1267,7 +1242,7 @@ func singleSimplex2D[T Float](state *State[T], seed int, x, y T) T {
 	return (n0 + n1 + n2) * 99.83685446303647
 }
 
-func singleOpenSimplex23D[T Float](state *State[T], seed int, x, y, z T) T {
+func singleOpenSimplex23D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	// 3D OpenSimplex2 case uses two offset rotated cube grids.
 
 	i := fastRound(x)
@@ -1352,7 +1327,7 @@ func singleOpenSimplex23D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // OpenSimplex2S Noise
 
-func singleOpenSimplex2S2D[T Float](state *State[T], seed int, x, y T) T {
+func singleOpenSimplex2S2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	// 2D OpenSimplex2S case is a modified 2D simplex noise.
 
 	const SQRT3 float64 = 1.7320508075688772935274463415059
@@ -1451,7 +1426,7 @@ func singleOpenSimplex2S2D[T Float](state *State[T], seed int, x, y T) T {
 	return value * 18.24196194486065
 }
 
-func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
+func singleOpenSimplex2S3D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	// 3D OpenSimplex2S case uses two offset rotated cube grids.
 
 	i := fastFloor(x)
@@ -1659,7 +1634,7 @@ func singleOpenSimplex2S3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // Cellular Noise
 
-func singleCellular2D[T Float](state *State[T], seed int, x, y T) T {
+func singleCellular2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	xr := fastRound(x)
 	yr := fastRound(y)
 
@@ -1694,7 +1669,7 @@ func singleCellular2D[T Float](state *State[T], seed int, x, y T) T {
 
 				newDistance := vecX*vecX + vecY*vecY
 
-				dist1 = fastMax(fastMin(dist1, newDistance), dist0)
+				dist1 = max(min(dist1, newDistance), dist0)
 				if newDistance < dist0 {
 					dist0 = newDistance
 					closestHash = hash
@@ -1715,7 +1690,7 @@ func singleCellular2D[T Float](state *State[T], seed int, x, y T) T {
 				vecY := (T(yi) - y) + T(randVecs2D[idx|1])*jitter
 				newDistance := fastAbs(vecX) + fastAbs(vecY)
 
-				dist1 = fastMax(fastMin(dist1, newDistance), dist0)
+				dist1 = max(min(dist1, newDistance), dist0)
 				if newDistance < dist0 {
 					dist0 = newDistance
 					closestHash = hash
@@ -1736,7 +1711,7 @@ func singleCellular2D[T Float](state *State[T], seed int, x, y T) T {
 
 				newDistance := (fastAbs(vecX) + fastAbs(vecY)) + (vecX*vecX + vecY*vecY)
 
-				dist1 = fastMax(fastMin(dist1, newDistance), dist0)
+				dist1 = max(min(dist1, newDistance), dist0)
 				if newDistance < dist0 {
 					dist0 = newDistance
 					closestHash = hash
@@ -1775,7 +1750,7 @@ func singleCellular2D[T Float](state *State[T], seed int, x, y T) T {
 	}
 }
 
-func singleCellular3D[T Float](state *State[T], seed int, x, y, z T) T {
+func singleCellular3D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	xr := fastRound(x)
 	yr := fastRound(y)
 	zr := fastRound(z)
@@ -1814,7 +1789,7 @@ func singleCellular3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 					newDistance := vecX*vecX + vecY*vecY + vecZ*vecZ
 
-					dist1 = fastMax(fastMin(dist1, newDistance), dist0)
+					dist1 = max(min(dist1, newDistance), dist0)
 					if newDistance < dist0 {
 						dist0 = newDistance
 						closestHash = hash
@@ -1842,7 +1817,7 @@ func singleCellular3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 					newDistance := fastAbs(vecX) + fastAbs(vecY) + fastAbs(vecZ)
 
-					dist1 = fastMax(fastMin(dist1, newDistance), dist0)
+					dist1 = max(min(dist1, newDistance), dist0)
 					if newDistance < dist0 {
 						dist0 = newDistance
 						closestHash = hash
@@ -1870,7 +1845,7 @@ func singleCellular3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 					newDistance := (fastAbs(vecX) + fastAbs(vecY) + fastAbs(vecZ)) + (vecX*vecX + vecY*vecY + vecZ*vecZ)
 
-					dist1 = fastMax(fastMin(dist1, newDistance), dist0)
+					dist1 = max(min(dist1, newDistance), dist0)
 					if newDistance < dist0 {
 						dist0 = newDistance
 						closestHash = hash
@@ -1913,7 +1888,7 @@ func singleCellular3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // Perlin Noise
 
-func singlePerlin2D[T Float](state *State[T], seed int, x, y T) T {
+func singlePerlin2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	x0 := fastFloor(x)
 	y0 := fastFloor(y)
 
@@ -1936,7 +1911,7 @@ func singlePerlin2D[T Float](state *State[T], seed int, x, y T) T {
 	return lerp(xf0, xf1, ys) * 1.4247691104677813
 }
 
-func singlePerlin3D[T Float](state *State[T], seed int, x, y, z T) T {
+func singlePerlin3D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	x0 := fastFloor(x)
 	y0 := fastFloor(y)
 	z0 := fastFloor(z)
@@ -1988,7 +1963,7 @@ func singlePerlin3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // Value Cubic
 
-func singleValueCubic2D[T Float](state *State[T], seed int, x, y T) T {
+func singleValueCubic2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	x1 := fastFloor(x)
 	y1 := fastFloor(y)
 
@@ -2038,7 +2013,7 @@ func singleValueCubic2D[T Float](state *State[T], seed int, x, y T) T {
 	) * (1 / (1.5 * 1.5))
 }
 
-func singleValueCubic3D[T Float](state *State[T], seed int, x, y, z T) T {
+func singleValueCubic3D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	x1 := fastFloor(x)
 	y1 := fastFloor(y)
 	z1 := fastFloor(z)
@@ -2191,7 +2166,7 @@ func singleValueCubic3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // Value noise
 
-func singleValue2D[T Float](state *State[T], seed int, x, y T) T {
+func singleValue2D[T Float](state *NoiseState[T], seed int, x, y T) T {
 	x0 := fastFloor(x)
 	y0 := fastFloor(y)
 
@@ -2209,7 +2184,7 @@ func singleValue2D[T Float](state *State[T], seed int, x, y T) T {
 	return lerp(xf0, xf1, ys)
 }
 
-func singleValue3D[T Float](state *State[T], seed int, x, y, z T) T {
+func singleValue3D[T Float](state *NoiseState[T], seed int, x, y, z T) T {
 	x0 := fastFloor(x)
 	y0 := fastFloor(y)
 	z0 := fastFloor(z)
@@ -2238,7 +2213,7 @@ func singleValue3D[T Float](state *State[T], seed int, x, y, z T) T {
 
 // Domain Warp
 
-func doSingleDomainWarp2D[T Float](state *State[T], seed int, amp, freq, x, y T, xp, yp *T) {
+func doSingleDomainWarp2D[T Float](state *NoiseState[T], seed int, amp, freq, x, y T, xp, yp *T) {
 	switch state.DomainWarpType {
 	case DomainWarpOpenSimplex2:
 		singleDomainWarpSimplexGradient(seed, amp*38.283687591552734375, freq, x, y, xp, yp, false)
@@ -2249,7 +2224,7 @@ func doSingleDomainWarp2D[T Float](state *State[T], seed int, amp, freq, x, y T,
 	}
 }
 
-func doSingleDomainWarp3D[T Float](state *State[T], seed int, amp, freq, x, y, z T, xp, yp, zp *T) {
+func doSingleDomainWarp3D[T Float](state *NoiseState[T], seed int, amp, freq, x, y, z T, xp, yp, zp *T) {
 	switch state.DomainWarpType {
 	case DomainWarpOpenSimplex2:
 		singleDomainWarpOpenSimplex2Gradient(
@@ -2284,7 +2259,7 @@ func doSingleDomainWarp3D[T Float](state *State[T], seed int, amp, freq, x, y, z
 
 // Domain Warp Single Wrapper
 
-func domainWarpSingle2D[T Float](state *State[T], x, y *T) {
+func domainWarpSingle2D[T Float](state *NoiseState[T], x, y *T) {
 	seed := state.Seed
 	amp := state.DomainWarpAmp * calculateFractalBounding(state)
 	freq := state.Frequency
@@ -2296,7 +2271,7 @@ func domainWarpSingle2D[T Float](state *State[T], x, y *T) {
 	doSingleDomainWarp2D(state, seed, amp, freq, xs, ys, x, y)
 }
 
-func domainWarpSingle3D[T Float](state *State[T], x, y, z *T) {
+func domainWarpSingle3D[T Float](state *NoiseState[T], x, y, z *T) {
 	seed := state.Seed
 	amp := state.DomainWarpAmp * calculateFractalBounding(state)
 	freq := state.Frequency
@@ -2311,7 +2286,7 @@ func domainWarpSingle3D[T Float](state *State[T], x, y, z *T) {
 
 // Domain Warp Fractal Progressive
 
-func domainWarpFractalProgressive2D[T Float](state *State[T], x, y *T) {
+func domainWarpFractalProgressive2D[T Float](state *NoiseState[T], x, y *T) {
 	seed := state.Seed
 	amp := state.DomainWarpAmp * calculateFractalBounding(state)
 	freq := state.Frequency
@@ -2329,7 +2304,7 @@ func domainWarpFractalProgressive2D[T Float](state *State[T], x, y *T) {
 	}
 }
 
-func domainWarpFractalProgressive3D[T Float](state *State[T], x, y, z *T) {
+func domainWarpFractalProgressive3D[T Float](state *NoiseState[T], x, y, z *T) {
 	seed := state.Seed
 	amp := state.DomainWarpAmp * calculateFractalBounding(state)
 	freq := state.Frequency
@@ -2350,7 +2325,7 @@ func domainWarpFractalProgressive3D[T Float](state *State[T], x, y, z *T) {
 
 // Domain Warp Fractal Independent
 
-func domainWarpFractalIndependent2D[T Float](state *State[T], x, y *T) {
+func domainWarpFractalIndependent2D[T Float](state *NoiseState[T], x, y *T) {
 	xs := *x
 	ys := *y
 	transformDomainWarpCoordinate2D(state, &xs, &ys)
@@ -2368,7 +2343,7 @@ func domainWarpFractalIndependent2D[T Float](state *State[T], x, y *T) {
 	}
 }
 
-func domainWarpFractalIndependent3D[T Float](state *State[T], x, y, z *T) {
+func domainWarpFractalIndependent3D[T Float](state *NoiseState[T], x, y, z *T) {
 	xs := *x
 	ys := *y
 	zs := *z
