@@ -20,29 +20,32 @@ FastNoise Lite is a noise generation package with a large selection of noise alg
 
 ## Getting Started
 
-Here's an example for creating a 128x128 array of OpenSimplex2 noise
+Here's an example of OpenSimplex2 noise with DomainWarp
 
 ```go
-package main
-
-import (
-	"github.com/setanarut/fastnoise"
-)
-
-func main() {
-
-	// Create and configure noise state (either float32 or float64)
-	var noise = fastnoise.New[float32]()
-	noise.NoiseType(fastnoise.OpenSimplex2)
-
-	var noiseData [128][128]float32
-
-	for x := range 128 {
-		for y := range 128 {
-			// Gather noise data
-			noiseData[x][y] = noise.Noise2D(x, y)
+	chars := " .:;+=xX$"
+	noiseState := fastnoise.NewNoiseState[float32]()
+	noiseState.Frequency = 0.05
+	noiseState.DomainWarpType = fastnoise.DomainWarpOpenSimplex2Reduced
+	noiseState.DomainWarpAmp = 30
+	for y := range 10 {
+		for x := range 80 {
+			wx, wy := fastnoise.DomainWarp2D(x, y, noiseState)
+			v := fastnoise.Value2D(wx, wy, noiseState)
+			i := int((v + 1) / 2 * float32(len(chars)))
+			fmt.Print(string(chars[i]))
 		}
+		fmt.Println()
 	}
-	// Do something with noiseData...
-}
+	// Output:
+	// ++=xXX=+;;;+++==+;. :x$x;..    .:;;++;::....:;;. .;++==xXX$XX=+xX+. ;X$Xx+;;;;;:
+	// =xxX$x+;;+++;;;;:..;xXx;;;+++;:....::..      .:. .;+====xxXxx==XX; .=X$Xx++;;;;:
+	// XX$$X=+;+++++;;:::;xXx++xX$$XXx+;:...         .. .;==========xX$x:.;X$Xx=++;;;;;
+	// X$Xx=+++====++;;;+=x=++x$XXxxxxx=+;:.    ...  .. .+xXXxx===xxX$X+.;x$Xx+;;;;;;;:
+	// +=++;++=xx===++;+=x=;+xx=+;;;;+++=+;:............:=X$$$XXXXX$$X=;;x$X=;:..::::::
+	// .::;+=xxxxx==++++==;;==+::;++;;:;+=+;::::::::::..+X$$$$$$$$$$X=++xXx;:.    ..:::
+	// :;+=xxxxxxxx==+++=+:;++::;===++::;+=++;;;;;;;;:::x$$XXXxxxxxx=+=xX=;::::........
+	// =xXXXXXXx======++=;:;+:.:=xxx=+;::;+=++++++++;::+X$XXxx====++=xXX=++=xxx=+;::...
+	// X$$$$$Xx=++++==++=;.:;..;xXXxx=+:.:;++++++++;;:+xXXXXx=======xXXx++xX$$XXx=+;::.
+	// $$$$$$Xx=;;;;=====;.::..+xXXxx=+;..::;;;;;;;::;=XxX$XxxxXXXXXXXx==xX$$$XXx===+;;
 ```
