@@ -701,10 +701,10 @@ func (state *State[T]) apply() {
 	}
 }
 
-// NoiseType specifies the algorithm that will be used with GetNoise2D and GetNoise3D.
+// SetNoiseType specifies the algorithm that will be used with GetNoise2D and GetNoise3D.
 //
 // Default: OpenSimplex2
-func (state *State[T]) NoiseType(nt NoiseType) {
+func (state *State[T]) SetNoiseType(nt NoiseType) {
 	state.noiseType = nt
 	state.apply()
 }
@@ -718,7 +718,7 @@ func (state *State[T]) FractalType(ft FractalType) {
 	state.apply()
 }
 
-// GetNoise2D calculates the noise value at the specified 2D position using the current state
+// Noise2D calculates the noise value at the specified 2D position using the current state
 // settings.
 //
 // This is a convenience function for GetNoise2D that accepts integral coordinates.
@@ -728,16 +728,6 @@ func (state *State[T]) Noise2D(x, y int) T {
 	return state.noise2D(state, state.Seed, fx, fy)
 }
 
-// GetNoise3D calculates the noise value at the specified 3D position using the current state
-// settings.
-//
-// This is a convenience function for GetNoise3D that accepts integral coordinates.
-// Return values are always normalized and in the range of -1.0 and 1.0.
-func (state *State[T]) Noise3D(x, y, z int) T {
-	fx, fy, fz := state.transformNoiseCoordinate3D(T(x), T(y), T(z))
-	return state.noise3D(state, state.Seed, fx, fy, fz)
-}
-
 // GetNoise2D calculates the noise value at the specified 2D position using the current state
 // settings.
 //
@@ -745,6 +735,16 @@ func (state *State[T]) Noise3D(x, y, z int) T {
 func (state *State[T]) GetNoise2D(x, y T) T {
 	x, y = state.transformNoiseCoordinate2D(x, y)
 	return state.noise2D(state, state.Seed, x, y)
+}
+
+// Noise3D calculates the noise value at the specified 3D position using the current state
+// settings.
+//
+// This is a convenience function for GetNoise3D that accepts integral coordinates.
+// Return values are always normalized and in the range of -1.0 and 1.0.
+func (state *State[T]) Noise3D(x, y, z int) T {
+	fx, fy, fz := state.transformNoiseCoordinate3D(T(x), T(y), T(z))
+	return state.noise3D(state, state.Seed, fx, fy, fz)
 }
 
 // GetNoise3D calculates the noise value at the specified 3D position using the current state
